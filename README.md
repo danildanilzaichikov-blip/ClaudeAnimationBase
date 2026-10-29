@@ -4,7 +4,8 @@
 > - [lyricfx/](lyricfx/README.md)：三种动效歌词字幕（纸条贴字、大字蹦出、动态排版），两套画风通用
 > - [ink/](ink/README.md)：水墨笔触核心（**半成品**，只有笔触层，画面设计那次失败了——先读它的开头）
 > - [extras/](extras/README.md)：以前片子里的现成场景、道具和角色
-> - `tools/music/`：拍网格、对拍视频；`tools/lyrics/`：逐字歌词时间（有 LRC 用 `cmp_lrc.py`）、字幕字体；`tools/ci/`：云端分段渲染模板和局部重渲接回；`tools/check/`：模拟用户打开网页
+> - `.claude/agents/animator.md`：做动画的 Claude Code 子代理（分镜 → 选画风 → 写镜头 → 自己看缩略图检查 → 渲染），用 `/animate <要做什么>` 调用
+- `tools/music/`：拍网格、对拍视频；`tools/lyrics/`：逐字歌词时间（有 LRC 用 `cmp_lrc.py`）、字幕字体；`tools/ci/`：云端分段渲染模板和局部重渲接回；`tools/check/`：模拟用户打开网页
 
 # Claude Animation Base
 
