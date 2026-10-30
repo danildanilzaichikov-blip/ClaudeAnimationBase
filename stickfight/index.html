@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Последняя чашка</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html,body{margin:0;background:#e9dcc0;height:100%;font:14px system-ui,sans-serif;color:#2a2320}
+  #wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
+  canvas{max-width:100vw;max-height:calc(100vh - 56px);aspect-ratio:16/9;box-shadow:0 4px 24px rgba(60,40,20,.25)}
+  #bar{display:flex;gap:10px;align-items:center;padding:10px;width:min(100vw,1200px);box-sizing:border-box}
+  #bar button{border:1px solid #8a7c6c;background:#f4ead4;border-radius:6px;padding:4px 12px;cursor:pointer}
+  #seek{flex:1}
+</style></head>
+<body><div id="wrap"><canvas id="c" width="1920" height="1080"></canvas>
+<div id="bar"><button id="play">▶</button><span id="tm">0.0</span><input id="seek" type="range" min="0" max="1000" value="0"><label><input id="snd" type="checkbox" checked> звук</label></div></div>
+<audio id="au" src="audio/track.wav" preload="auto"></audio>
+<script src="js/core.js"></script><script src="js/rig.js"></script><script src="js/draw.js"></script>
+<script src="js/fx.js"></script><script src="js/world.js"></script><script src="js/main.js"></script>
+<script src="js/shots_a.js"></script><script src="js/shots_b.js"></script>
+<script>
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'), au = document.getElementById('au');
+buildTimeline(); window.DURATION_ = DURATION;
+let playing = false, t0 = 0, base = 0, cur = 0;
+const q = new URLSearchParams(location.search); if (q.get('t')) cur = +q.get('t');
+function draw(t) { cur = t; renderFrame(ctx, t); document.getElementById('tm').textContent = t.toFixed(2) + ' / ' + DURATION.toFixed(1); document.getElementById('seek').value = t / DURATION * 1000; }
+function loop() { if (!playing) return; const t = base + (performance.now() - t0) / 1000; if (t >= DURATION) { playing = false; draw(DURATION - 0.001); return; } draw(t); requestAnimationFrame(loop); }
+function play() { if (cur >= DURATION - 0.01) cur = 0; playing = true; base = cur; t0 = performance.now(); if (document.getElementById('snd').checked) { au.currentTime = cur; au.play().catch(() => {}); } document.getElementById('play').textContent = '❚❚'; loop(); }
+function pause() { playing = false; au.pause(); document.getElementById('play').textContent = '▶'; }
+document.getElementById('play').onclick = () => playing ? pause() : play();
+document.getElementById('seek').oninput = e => { pause(); draw(e.target.value / 1000 * DURATION); };
+addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); } if (e.code === 'ArrowRight') { pause(); draw(Math.min(DURATION, cur + (e.shiftKey ? 1 / FPS : 1))); } if (e.code === 'ArrowLeft') { pause(); draw(Math.max(0, cur - (e.shiftKey ? 1 / FPS : 1))); } });
+window.__render = t => renderFrame(ctx, t);
+draw(cur); window.__ready = true;
+</script></body></html>

@@ -1,0 +1,4 @@
+out/
+work/
+audio/*.wav
+audio/sfx.json
